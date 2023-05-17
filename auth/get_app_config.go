@@ -13,7 +13,7 @@ func CreateGetConfigHandler(config Config) func(c *gin.Context) {
 		auth0API, err := management.New(
 			config.Auth0Domain,
 			management.WithContext(c),
-			management.WithClientCredentials(config.APIClientID, config.APIClientSecret),
+			management.WithClientCredentials(config.Auth0ClientID, config.Auth0ClientSecret),
 		)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("failed to initialize the auth0 management API client: %w", err))
@@ -75,7 +75,7 @@ func CreateGetConfigHandler(config Config) func(c *gin.Context) {
 				},
 				Auth0: Auth0Config{
 					Domain:      config.Auth0Domain,
-					AppClientID: config.APPClientID,
+					AppClientID: config.Auth0ClientID,
 				},
 			},
 		})
