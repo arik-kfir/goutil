@@ -12,6 +12,7 @@ require (
 	github.com/rs/zerolog v1.28.0
 	github.com/rueian/rueidis v0.0.93
 	github.com/vektah/gqlparser/v2 v2.5.1
+	golang.org/x/oauth2 v0.7.0
 )
 
 require (
@@ -27,7 +28,6 @@ require (
 	github.com/googleapis/enterprise-certificate-proxy v0.2.3 // indirect
 	github.com/googleapis/gax-go/v2 v2.8.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	golang.org/x/oauth2 v0.7.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	google.golang.org/api v0.118.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
