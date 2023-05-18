@@ -3,6 +3,7 @@ package gcputil
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"golang.org/x/oauth2/google"
 	"os"
@@ -10,10 +11,26 @@ import (
 	"strings"
 )
 
+func getGoogleCloudCLIProject(ctx context.Context) (string, error) {
+	out := bytes.Buffer{}
+	getProjectCmd := exec.CommandContext(ctx, "gcloud", "config", "get", "project")
+	getProjectCmd.Stderr = os.Stderr
+	getProjectCmd.Stdout = &out
+	if err := getProjectCmd.Run(); err != nil {
+		return "", fmt.Errorf("failed to get GCP project from 'gcloud config get project': %w", err)
+	} else {
+		return strings.TrimSpace(out.String()), nil
+	}
+}
+
 func GetDefaultProjectID(ctx context.Context) (string, error) {
-	credentials, err := google.FindDefaultCredentials(ctx, "https://www.googleapis.com/auth/compute")
-	if err != nil {
-		return "", fmt.Errorf("failed to get GCP project from default credentials: %w", err)
+	credentials, adcErr := google.FindDefaultCredentials(ctx, "https://www.googleapis.com/auth/compute")
+	if adcErr != nil {
+		if p, cliErr := getGoogleCloudCLIProject(ctx); cliErr != nil {
+			return "", fmt.Errorf("failed to get GCP project: %w", errors.Join(adcErr, cliErr))
+		} else {
+			return p, nil
+		}
 	}
 
 	gcpProjectID := credentials.ProjectID
@@ -21,12 +38,5 @@ func GetDefaultProjectID(ctx context.Context) (string, error) {
 		return gcpProjectID, nil
 	}
 
-	out := bytes.Buffer{}
-	getProjectCmd := exec.CommandContext(ctx, "gcloud", "config", "get", "project")
-	getProjectCmd.Stderr = os.Stderr
-	getProjectCmd.Stdout = &out
-	if err := getProjectCmd.Run(); err != nil {
-		return "", fmt.Errorf("failed to get GCP project by running 'gcloud config get project': %w", err)
-	}
-	return strings.TrimSpace(out.String()), nil
+	return getGoogleCloudCLIProject(ctx)
 }
