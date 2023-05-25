@@ -30,4 +30,5 @@ func Configure(config CommonConfig) {
 		zerolog.SetGlobalLevel(level)
 	}
 	zerolog.DefaultContextLogger = &log.Logger
+	log.Info().Interface("config", config).Msg("Configured")
 }
