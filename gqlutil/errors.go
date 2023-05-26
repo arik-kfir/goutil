@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	"reflect"
@@ -32,13 +33,21 @@ func ErrorPresenter(ctx context.Context, e error) *gqlerror.Error {
 	}
 
 	path := graphql.GetPath(ctx)
-	log.Ctx(ctx).
-		Error().
-		Stack().
-		Err(e).
-		Interface("actualError", fmt.Sprintf("%T: %+v", e, e)).
-		Interface("gqlPath", path).
-		Msg("Internal error occurred")
+	if gc, ok := ctx.(*gin.Context); ok {
+		_ = gc.Error(e).
+			SetType(gin.ErrorTypePrivate).
+			SetMeta(map[string]interface{}{
+				"gqlPath": path,
+			})
+	} else {
+		log.Ctx(ctx).
+			Error().
+			Stack().
+			Err(e).
+			Interface("actualError", fmt.Sprintf("%T: %+v", e, e)).
+			Interface("gqlPath", path).
+			Msg("Internal error occurred")
+	}
 
 	return &gqlerror.Error{
 		Message:    "An internal error has occurred.",
