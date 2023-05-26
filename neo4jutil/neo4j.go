@@ -27,9 +27,9 @@ func (nl *Neo4jZerologBoltLogger) LogServerMessage(id, msg string, args ...inter
 func (c *Neo4jConfig) Connect() (neo4j.DriverWithContext, error) {
 	var url string
 	if c.TLS {
-		url = fmt.Sprintf("bolt://%s:%d", c.Host, c.Port)
-	} else {
 		url = fmt.Sprintf("bolt+s://%s:%d", c.Host, c.Port)
+	} else {
+		url = fmt.Sprintf("bolt://%s:%d", c.Host, c.Port)
 	}
 	neo4jDriver, err := neo4j.NewDriverWithContext(url, neo4j.NoAuth())
 	if err != nil {
