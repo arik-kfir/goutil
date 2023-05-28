@@ -1,6 +1,7 @@
 package ginutil
 
 import (
+	"github.com/gin-contrib/requestid"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -21,6 +22,7 @@ func NewGin(devMode bool) *gin.Engine {
 	router := gin.New()
 	router.ContextWithFallback = true
 	router.MaxMultipartMemory = 8 << 20
+	router.Use(requestid.New())
 	router.Use(SetLoggerMiddleware)
 	router.Use(AccessLogMiddleware)
 	return router

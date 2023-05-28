@@ -2,6 +2,7 @@ package ginutil
 
 import (
 	"bytes"
+	"github.com/gin-contrib/requestid"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -46,6 +47,7 @@ func AccessLogMiddleware(c *gin.Context) {
 
 	re := log.Ctx(c).With()
 	re = re.
+		Str("request:id", requestid.Get(c)).
 		Dur("http:process:duration", duration).
 		Int("http:res:status", c.Writer.Status()).
 		Int("http:res:size", c.Writer.Size())

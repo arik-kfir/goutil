@@ -8,6 +8,7 @@ require (
 	github.com/auth0/go-auth0 v0.17.0
 	github.com/auth0/go-jwt-middleware/v2 v2.1.0
 	github.com/gin-contrib/cors v1.4.0
+	github.com/gin-contrib/requestid v0.0.6
 	github.com/gin-gonic/gin v1.8.2
 	github.com/neo4j/neo4j-go-driver/v5 v5.8.1
 	github.com/rs/zerolog v1.28.0
@@ -26,6 +27,7 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/s2a-go v0.1.0 // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.3 // indirect
 	github.com/googleapis/gax-go/v2 v2.8.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
