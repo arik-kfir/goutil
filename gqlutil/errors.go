@@ -32,9 +32,16 @@ func ErrorPresenter(ctx context.Context, e error) *gqlerror.Error {
 		return e.(*gqlerror.Error)
 	}
 
+	var ginCtx *gin.Context
+	if gcv := ctx.Value(gin.ContextKey); gcv != nil {
+		if gc, ok := gcv.(*gin.Context); ok {
+			ginCtx = gc
+		}
+	}
+
 	path := graphql.GetPath(ctx)
-	if gc, ok := ctx.(*gin.Context); ok {
-		_ = gc.Error(e).
+	if ginCtx != nil {
+		_ = ginCtx.Error(e).
 			SetType(gin.ErrorTypePrivate).
 			SetMeta(map[string]interface{}{
 				"gqlPath": path,
