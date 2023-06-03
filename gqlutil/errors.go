@@ -51,7 +51,6 @@ func ErrorPresenter(ctx context.Context, e error) *gqlerror.Error {
 			Error().
 			Stack().
 			Err(e).
-			Interface("actualError", fmt.Sprintf("%T: %+v", e, e)).
 			Interface("gqlPath", path).
 			Msg("Internal error occurred")
 	}
@@ -63,10 +62,12 @@ func ErrorPresenter(ctx context.Context, e error) *gqlerror.Error {
 	}
 }
 
-func PanicRecoverer(ctx context.Context, err interface{}) error {
-	log.Ctx(ctx).Error().Stack().Interface("panic", fmt.Sprintf("%T: %+v", err, err)).Msg("Recovered from panic")
-	if e, ok := err.(error); ok {
-		return e
+func PanicRecoverer(ctx context.Context, p interface{}) error {
+	if e, ok := p.(error); ok {
+		// We assume stack trace will be retained for the wrapped error
+		return fmt.Errorf("recovered panic (error type): %w", e)
+	} else {
+		// No stack trace will be available, so we format the panic object itself with as much information as possible
+		return fmt.Errorf("recovered panic of type '%T': %+v", p, p)
 	}
-	return fmt.Errorf("internal server error: %v", err)
 }
