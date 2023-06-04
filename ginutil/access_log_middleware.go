@@ -80,7 +80,7 @@ func AccessLogMiddleware(c *gin.Context) {
 		errorsArr = append(errorsArr, err.Err)
 	}
 	if len(errorsArr) > 0 {
-		event = event.Err(errorsArr[0])
+		event = event.Stack().Err(errorsArr[0])
 		if len(errorsArr) > 1 {
 			event = event.Errs("http:res:errors", errorsArr)
 		}
